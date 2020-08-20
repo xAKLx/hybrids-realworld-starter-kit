@@ -9,3 +9,11 @@ export function preventDefaultOn(action) {
     action(host, event);
   };
 }
+
+export function preventDefault() {
+  return preventDefaultOn(() => {});
+}
+
+export function changeLocation(destination) {
+  location.href = destination; /* eslint-disable-line functional/immutable-data */
+}
