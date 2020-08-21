@@ -14,13 +14,12 @@ export async function getArticles(filter = {}) {
 }
 
 export async function getFeedArticles(filter = {}) {
-  const headers = getAuthorizationHeader();
   const url =
     Object.keys(filter).length > 0
       ? `${baseUrl}/articles/feed?${objectToQueryParams(filter)}`
       : `${baseUrl}/articles/feed`;
 
-  const { data } = await Axios.get(url, { headers });
+  const { data } = await Axios.get(url);
 
   return data;
 }
@@ -52,39 +51,26 @@ export async function login(email, password) {
 export async function getCurrentUser() {
   const {
     data: { user },
-  } = await Axios.get(`${baseUrl}/user`, {
-    headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-  });
+  } = await Axios.get(`${baseUrl}/user`);
   return user;
 }
 
 export async function updateSettings(settings) {
-  const { data } = await Axios.put(
-    `${baseUrl}/user`,
-    { user: settings },
-    {
-      headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-    },
-  );
+  const { data } = await Axios.put(`${baseUrl}/user`, { user: settings });
   return data;
 }
 
 export async function getUser(username) {
-  const token = localStorage.getItem('token');
-  const headers = token === null ? {} : { Authorization: `Token ${token}` };
   const {
     data: { profile },
-  } = await Axios.get(`${baseUrl}/profiles/${username}`, {
-    headers,
-  });
+  } = await Axios.get(`${baseUrl}/profiles/${username}`);
   return profile;
 }
 
 export async function toggleFollowUser(follow, username) {
-  const headers = getAuthorizationHeader();
   const url = `${baseUrl}/profiles/${username}/follow`;
 
-  const request = follow ? Axios.delete(url, { headers }) : Axios.post(url, {}, { headers });
+  const request = follow ? Axios.delete(url) : Axios.post(url, {});
   const {
     data: { profile },
   } = await request;
@@ -92,7 +78,13 @@ export async function toggleFollowUser(follow, username) {
   return profile;
 }
 
-function getAuthorizationHeader() {
+/* eslint-disable */
+Axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  return { Authorization: `Token ${token}` };
-}
+
+  if (token) {
+    config.headers.Authorization = `Token ${token}`;
+  }
+
+  return config;
+});
