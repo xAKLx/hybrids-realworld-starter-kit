@@ -52,7 +52,12 @@ export async function changeTab(tab) {
     tab,
   });
 
-  const request = tab === 'global' ? loadPage : tab === 'your feed' ? loadFeedPage : loadTagPage;
+  const request =
+    tab === 'global'
+      ? loadPage
+      : tab === 'your feed'
+      ? loadFeedPage
+      : (page) => loadTagPage(tab.slice(1), page);
   await request(0);
 }
 

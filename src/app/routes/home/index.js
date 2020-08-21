@@ -63,7 +63,7 @@ export default {
                     ? loadPage(index)
                     : tab === 'your feed'
                     ? loadFeedPage(index)
-                    : loadTagPage(index),
+                    : loadTagPage(tab.slice(1), index),
                 )}"
               ></article-list>
             </div>
