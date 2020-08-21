@@ -13,6 +13,18 @@ export async function getArticles(filter = {}) {
   return data;
 }
 
+export async function getFeedArticles(filter = {}) {
+  const headers = getAuthorizationHeader();
+  const url =
+    Object.keys(filter).length > 0
+      ? `${baseUrl}/articles/feed?${objectToQueryParams(filter)}`
+      : `${baseUrl}/articles/feed`;
+
+  const { data } = await Axios.get(url, { headers });
+
+  return data;
+}
+
 function objectToQueryParams(object) {
   return Object.entries(object)
     .map(([key, value]) => `${key}=${value}`)
@@ -69,8 +81,7 @@ export async function getUser(username) {
 }
 
 export async function toggleFollowUser(follow, username) {
-  const token = localStorage.getItem('token');
-  const headers = { Authorization: `Token ${token}` };
+  const headers = getAuthorizationHeader();
   const url = `${baseUrl}/profiles/${username}/follow`;
 
   const request = follow ? Axios.delete(url, { headers }) : Axios.post(url, {}, { headers });
@@ -79,4 +90,9 @@ export async function toggleFollowUser(follow, username) {
   } = await request;
 
   return profile;
+}
+
+function getAuthorizationHeader() {
+  const token = localStorage.getItem('token');
+  return { Authorization: `Token ${token}` };
 }
