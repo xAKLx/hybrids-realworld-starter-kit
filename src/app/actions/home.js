@@ -1,4 +1,4 @@
-import { getTags, getArticles, getCurrentUser } from '../services/conduit';
+import { getTags, getArticles, getCurrentUser, getFeedArticles } from '../services/conduit';
 import store from '../store';
 
 export async function loadHome() {
@@ -28,6 +28,16 @@ export async function loadTagPage(tag, page = 0) {
   endLoadPage(articles, articlesCount);
 }
 
+export async function loadFeedPage(page = 0) {
+  store.dispatch({
+    type: 'START_LOAD_PAGE',
+    page,
+  });
+
+  const { articles, articlesCount } = await getFeedArticles({ offset: 20 * page });
+  endLoadPage(articles, articlesCount);
+}
+
 function endLoadPage(articles, count) {
   store.dispatch({
     type: 'LOAD_PAGE',
@@ -42,7 +52,13 @@ export async function changeTab(tab) {
     tab,
   });
 
-  (await tab) === 'global' ? loadPage(0) : loadTagPage(0);
+  const request =
+    tab === 'global'
+      ? loadPage
+      : tab === 'your feed'
+      ? loadFeedPage
+      : (page) => loadTagPage(tab.slice(1), page);
+  await request(0);
 }
 
 export async function loadUser() {
