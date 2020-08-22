@@ -1,12 +1,8 @@
 import Axios from 'axios';
 
-const baseUrl = 'https://conduit.productionready.io/api';
-
 export async function getArticles(filter = {}) {
   const url =
-    Object.keys(filter).length > 0
-      ? `${baseUrl}/articles?${objectToQueryParams(filter)}`
-      : `${baseUrl}/articles`;
+    Object.keys(filter).length > 0 ? `articles?${objectToQueryParams(filter)}` : `articles`;
 
   const { data } = await Axios.get(url);
 
@@ -16,8 +12,8 @@ export async function getArticles(filter = {}) {
 export async function getFeedArticles(filter = {}) {
   const url =
     Object.keys(filter).length > 0
-      ? `${baseUrl}/articles/feed?${objectToQueryParams(filter)}`
-      : `${baseUrl}/articles/feed`;
+      ? `articles/feed?${objectToQueryParams(filter)}`
+      : `articles/feed`;
 
   const { data } = await Axios.get(url);
 
@@ -33,13 +29,13 @@ function objectToQueryParams(object) {
 export async function getTags() {
   const {
     data: { tags },
-  } = await Axios.get(`${baseUrl}/tags`);
+  } = await Axios.get(`tags`);
 
   return tags;
 }
 
 export async function login(email, password) {
-  const { data } = await Axios.post(`${baseUrl}/users/login`, {
+  const { data } = await Axios.post(`users/login`, {
     user: {
       email,
       password,
@@ -51,24 +47,24 @@ export async function login(email, password) {
 export async function getCurrentUser() {
   const {
     data: { user },
-  } = await Axios.get(`${baseUrl}/user`);
+  } = await Axios.get(`user`);
   return user;
 }
 
 export async function updateSettings(settings) {
-  const { data } = await Axios.put(`${baseUrl}/user`, { user: settings });
+  const { data } = await Axios.put(`user`, { user: settings });
   return data;
 }
 
 export async function getUser(username) {
   const {
     data: { profile },
-  } = await Axios.get(`${baseUrl}/profiles/${username}`);
+  } = await Axios.get(`profiles/${username}`);
   return profile;
 }
 
 export async function toggleFollowUser(follow, username) {
-  const url = `${baseUrl}/profiles/${username}/follow`;
+  const url = `profiles/${username}/follow`;
 
   const request = follow ? Axios.delete(url) : Axios.post(url, {});
   const {
@@ -100,7 +96,7 @@ Axios.interceptors.request.use((config) => {
     config.headers.Authorization = `Token ${token}`;
   }
 
-  config.baseURL = baseUrl + '/';
+  config.baseURL = 'https://conduit.productionready.io/api/';
 
   return config;
 });
