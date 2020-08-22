@@ -1,4 +1,11 @@
-import { getTags, getArticles, getCurrentUser, getFeedArticles } from '../services/conduit';
+import {
+  getTags,
+  getArticles,
+  getCurrentUser,
+  getFeedArticles,
+  favoriteArticle,
+  unfavoriteArticle,
+} from '../services/conduit';
 import store from '../store';
 
 export async function loadHome() {
@@ -70,4 +77,13 @@ export async function loadUser() {
   } catch {
     localStorage.removeItem('token');
   }
+}
+
+export async function toggleFavoriteArticle({ favorited, slug }) {
+  const request = favorited ? unfavoriteArticle : favoriteArticle;
+
+  store.dispatch({
+    type: 'TOGGLE_FAVORITE_ARTICLE',
+    updatedArticle: await request(slug),
+  });
 }

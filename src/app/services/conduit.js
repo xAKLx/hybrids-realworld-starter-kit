@@ -78,6 +78,20 @@ export async function toggleFollowUser(follow, username) {
   return profile;
 }
 
+export async function favoriteArticle(slug) {
+  const {
+    data: { article },
+  } = await Axios.post(`articles/${slug}/favorite`);
+  return article;
+}
+
+export async function unfavoriteArticle(slug) {
+  const {
+    data: { article },
+  } = await Axios.delete(`articles/${slug}/favorite`);
+  return article;
+}
+
 /* eslint-disable */
 Axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
@@ -85,6 +99,8 @@ Axios.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`;
   }
+
+  config.baseURL = baseUrl + '/';
 
   return config;
 });
