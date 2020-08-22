@@ -1,10 +1,21 @@
 import { render, html } from 'hybrids';
 import * as R from 'ramda';
+import { toggleFavoriteArticle } from '../../actions/home';
+import { connect } from '../../core/store';
+import { changeLocation } from '../../core/attributes';
 
 export default {
+  isUserLoggedIn: connect(({ app }) => app.user !== null),
   article: {},
+  favoriteButtonClasses: ({ article: { favorited } }) => ({
+    'btn-outline-primary': !favorited,
+    'btn-primary': favorited,
+    btn: true,
+    'btn-sm': true,
+    'pull-xs-right': true,
+  }),
   render: render(
-    ({ article }) => html`
+    ({ article, favoriteButtonClasses, isUserLoggedIn }) => html`
       <div class="article-preview">
         <div class="article-meta">
           <a href="profile.html"><img src="${article.author.image}" /></a>
@@ -14,8 +25,12 @@ export default {
             </a>
             <span class="date">${article.createdAt}</span>
           </div>
-          <button class="btn btn-outline-primary btn-sm pull-xs-right">
-            <i class="ion-heart"></i> ${article.favoritedCount}
+          <button
+            class="${favoriteButtonClasses}"
+            onclick="${() =>
+              isUserLoggedIn ? toggleFavoriteArticle(article) : changeLocation('#/login')}"
+          >
+            <i class="ion-heart"></i> ${article.favoritesCount}
             <!-- TODO change icon when favorited -->
           </button>
         </div>

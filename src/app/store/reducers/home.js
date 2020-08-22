@@ -39,4 +39,11 @@ export default (
         pageAmount: 0,
       },
     }),
+    TOGGLE_FAVORITE_ARTICLE: ({ updatedArticle }) => ({
+      articles: {
+        list: state.articles.list.map((article) =>
+          article.slug === updatedArticle.slug ? updatedArticle : article,
+        ),
+      },
+    }),
   }) |> R.mergeDeepRight(state);
