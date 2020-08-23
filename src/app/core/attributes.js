@@ -17,3 +17,7 @@ export function preventDefault() {
 export function changeLocation(destination) {
   location.href = destination; /* eslint-disable-line functional/immutable-data */
 }
+
+export function onKeyPress(action) {
+  return (_, { key }) => action(key);
+}

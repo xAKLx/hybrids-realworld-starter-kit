@@ -17,5 +17,13 @@
   "rules": {
     "functional/functional-parameters": "off"
   },
-  "plugins": ["functional", "babel"]
+  "plugins": ["functional", "babel"],
+  "overrides": [
+    {
+      "files": ["*.actions.js"],
+      "rules": {
+        "functional/no-expression-statement": "off"
+      }
+    }
+  ]
 }

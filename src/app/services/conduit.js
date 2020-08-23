@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { Err, OK, Error } from '../core/monads/result';
 
 export async function getArticles(filter = {}) {
   const url =
@@ -86,6 +87,15 @@ export async function unfavoriteArticle(slug) {
     data: { article },
   } = await Axios.delete(`articles/${slug}/favorite`);
   return article;
+}
+
+export async function createArticle(article) {
+  const [{ data, status }, error] = await Axios.post('articles', {
+    article,
+  })
+    .then((x) => [x, false])
+    .catch(({ response }) => [response, true]);
+  return error ? Err(Error(status, data)) : OK(data);
 }
 
 /* eslint-disable */

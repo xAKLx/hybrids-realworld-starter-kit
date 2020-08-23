@@ -15,6 +15,7 @@ export default {
           login: 'route-sign-in',
           settings: 'route-settings',
           profile: 'route-profile',
+          editor: 'route-editor',
         }}"
       ></component-router>
     `,
